@@ -9,7 +9,7 @@
 
 int main() 
 {
-    int input_dim = 3;
+    int input_dim = 2;
     int hidden_dim[] = {2, 2};
     int classes = 2;
 
@@ -17,7 +17,7 @@ int main()
 
     Net ann = network_builder(num_layers, input_dim, hidden_dim, classes);
 
-    double input_vector[3] = {5, -1, 0};
+    double input_vector[2] = {5, -1};
 
     printf("\ninputs\n");
     for(int i = 0; i < input_dim; i++)

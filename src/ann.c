@@ -54,7 +54,7 @@ Net network_builder(int num_layers, int input_dim, int* hidden_dims, int classes
         }
         else
         {
-            net.layers[layer] = layer_builder(net.layers[layer - 1].output_dim, hidden_dims[layer], NO);
+            net.layers[layer] = layer_builder(net.layers[layer - 1].output_dim, hidden_dims[layer], YES);
         }
     }
 
