@@ -96,7 +96,7 @@ void dump_to_file(Net net, char* file_name)
         {
             for (int k = 0; k < field.columns; k++) 
             {
-                fprintf(fp, "%.2f,", field.weights[j][k]);
+                fprintf(fp, "%.2f ", field.weights[j][k]);
             }
             fprintf(fp, "\n");
         }
@@ -104,7 +104,7 @@ void dump_to_file(Net net, char* file_name)
         fprintf(fp, "Biases:\n");
         for (int j = 0; j < field.columns; j++) 
         {
-            fprintf(fp, "%.2f,", field.biases[j]);
+            fprintf(fp, "%.2f ", field.biases[j]);
         }
         fprintf(fp, "\n\n");
     }
