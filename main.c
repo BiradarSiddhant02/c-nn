@@ -32,6 +32,9 @@ int main()
         printf("%.2f ", output_vector[i]);
     printf("\n");
 
+    char filepath[1024] = "../out/ann.txt";
+    dump_to_file(ann, filepath);
+
 
     return 0;
 }

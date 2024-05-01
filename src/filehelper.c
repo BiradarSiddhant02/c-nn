@@ -16,18 +16,12 @@ WeightField create_field(Layer layer, int layer_num)
     for(int i = 0; i < field.rows; i++)
         field.weights[i] = (double*)malloc(field.columns * sizeof(double));
 
-    for(int i = 0; i < field.rows; i++) {
-        for(int j = 0; j < field.columns; j++) {
-            //copy layer weights and biases
-            field.weights[i][j] = layer.weights[j][i]; // Note the change in indices
-        }
-    }
+    field.weights = layer.weights;
 
-    // printf("layer num: %d\n", layer_num);
-    // printf("columns: %d\n", field.columns);
-    // printf("output_dim: %d\n", layer.output_dim);
-    // printf("rows: %d\n", field.rows);
-    // printf("input_dim: %d\n\n", layer.input_dim);
+    field.biases = (double*)malloc(field.rows * sizeof(double));
+
+    for(int i = 0; i < field.rows; i++)
+        field.biases[i] = layer.bias;
 
     return field;
 }
