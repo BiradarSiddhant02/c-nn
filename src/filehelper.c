@@ -2,8 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include "filehelper.h"
 #include "ann.h"
+#include "dataframe.h"
 
 WeightField create_field(Layer layer, int layer_num)
 {
@@ -110,3 +112,84 @@ void dump_to_file(Net net, char* file_name)
     // Close the file
     fclose(fp);
 }
+
+double** read_csv(char* file_name, int dims[])
+{
+    FILE* csv_file = fopen(file_name, "r");
+
+    if(csv_file == NULL) 
+    {
+        printf("Cannot open file\n");
+        return NULL;
+    }
+
+    char buffer[1024];
+    int row = 0;
+    int col = 0;
+
+    // Determine the number of rows and columns in the CSV
+    while(fgets(buffer, 1024, csv_file)) 
+    {
+        col = 0;
+        row++;
+        strtok(buffer, ","); 
+        while (strtok(NULL, ",") != NULL) col++;
+    }
+
+    // Reset file pointer to the beginning of the file
+    fseek(csv_file, 0, SEEK_SET);
+
+    // Allocate memory for the 2D array
+    double** data = (double**)malloc(row * sizeof(double*));
+    for (int i = 0; i < row; i++)
+        data[i] = (double*)malloc(col * sizeof(double));
+
+    // Read data from the CSV and store it in the 2D array
+    row = 0;
+    while(fgets(buffer, 1024, csv_file)) 
+    {
+        col = 0;
+        char* value = strtok(buffer, ",");
+        while (value != NULL) 
+        {
+            data[row][col++] = atof(value); // Convert string to double
+            value = strtok(NULL, ",");
+        }
+        row++;
+    }
+
+    dims[0] = row;
+    dims[1] = col;
+
+    fclose(csv_file);
+    return data;
+}
+
+int* data_size(char* file_name)
+{
+    FILE* csv_file = fopen(file_name, "r");
+
+    if(!csv_file) 
+    {
+        printf("Cannot open file\n");
+        return NULL;
+    }
+
+    char buffer[1024];
+    int row = 0;
+    int col = 0;
+
+    // Determine the number of rows and columns in the CSV
+    while(fgets(buffer, 1024, csv_file)) 
+    {
+        col = 0;
+        row++;
+        strtok(buffer, ","); 
+        while (strtok(NULL, ",") != NULL) col++;
+    }
+    
+    int* dimension = (int*)malloc(2 * sizeof(int));
+    dimension[0] = row; dimension[1] = col;
+    return dimension;
+}
+

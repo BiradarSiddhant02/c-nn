@@ -1,6 +1,7 @@
 #include "ann.h"
 #include "networkMath.h"
 #include "filehelper.h"
+#include "dataframe.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,24 +18,11 @@ int main()
 
     Net ann = network_builder(num_layers, input_dim, hidden_dim, classes);
 
-    double input_vector[2] = {5, -1};
+    int dims[2] = {0, 0};
 
-    printf("\ninputs\n");
-    for(int i = 0; i < input_dim; i++)
-        printf("%.2f ", input_vector[i]);
-    printf("\n");   
+    Data data;
 
-    print_weights(ann);
-
-    double* output_vector = forward_pass(ann, input_vector);
-
-    for(int i = 0; i < classes; i++)
-        printf("%.2f ", output_vector[i]);
-    printf("\n");
-
-    char filepath[1024] = "../out/ann.txt";
-    dump_to_file(ann, filepath);
-
+    data = get_data("../data/data.csv");
 
     return 0;
 }

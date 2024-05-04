@@ -23,3 +23,6 @@ WeightField create_field(Layer layer, int layer_num);
 TXTFile create_file(Net net, char* file_name);
 
 void dump_to_file(Net net, char* file_name);
+
+double** read_csv(char* file_name, int dims[]);
+int* data_size(char* file_name);
