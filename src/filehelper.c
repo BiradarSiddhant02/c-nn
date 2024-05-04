@@ -70,11 +70,9 @@ void dump_to_file(Net net, char* file_name)
 {
 
     TXTFile file = create_file(net, file_name);
-    // printf("fields created\n");
 
     // Open the file for writing
     FILE *fp = fopen(file.file_path, "w");
-    // printf("file path : %s\n", file.file_path);
     if (fp == NULL) 
     {
         perror("Error opening file");
