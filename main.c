@@ -20,9 +20,8 @@ int main()
 
     int dims[2] = {0, 0};
 
-    Data data;
-
-    data = get_data("../data/data.csv");
+    Data data = get_data("../data/data.csv");
+    head(data, 3);
 
     return 0;
 }

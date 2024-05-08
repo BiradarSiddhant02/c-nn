@@ -10,3 +10,6 @@ typedef struct data
 } Data;
 
 Data get_data(char* file_name);
+
+void head(Data data, int num);
+void printHorizontalLine(int width);
