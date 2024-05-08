@@ -23,8 +23,7 @@ int main()
     Data data = get_data("../data/data.csv");
     head(data, 3);
 
-    Data* frame;
-    frame = X_y(data);
+    // Samples frame = X_y(data);
 
     return 0;
 }

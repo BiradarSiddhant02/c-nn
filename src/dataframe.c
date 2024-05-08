@@ -51,61 +51,46 @@ void head(Data data, int num) {
     }
 }
 
-// function to seperate features and labels
-Data* X_y(Data data)
+double** X(Data df)
 {
-    // printf("data created\n");
-    Data* result = (Data*)malloc(2 * sizeof(Data)); // Allocate memory for features and labels
-
-    // Extract features
-    // printf("extracting x\n");
-    result[0] = X(data);
-    // printf("extracted x\n");
-
-    // Extract labels
-    // printf("extracting y\n");
-    result[1] = y(data);
-    // printf("extracted y\n");
-
-    return result;
-}
-
-Data X(Data data)
-{
-    Data features;
-    // printf("%d %d\n", data.rows, data.columns);
-    features.rows = data.rows;
-    // printf("%d\n", features.rows);
-    features.columns = data.columns - 1; // Exclude the last column for labels
-    // printf("%d\n", features.columns);
-    // printf("%d %d, %d %d\n", data.rows, data.columns, features.rows, features.columns);
-
-    // Allocate memory for features
-    features.raw_data = (double**)malloc(data.rows * sizeof(double*));
-    for (int i = 0; i < features.rows; i++) {
-        features.raw_data[i] = (double*)malloc((data.columns - 1) * sizeof(double));
-        for (int j = 0; j < features.columns; j++) {
-            features.raw_data[i][j] = data.raw_data[i][j];
-        }
+    double** features = (double**)malloc(df.rows * sizeof(double*));
+    printf("1\n");
+    for(int i = 0; i < df.columns - 1; i++)
+        features[i] = (double*)malloc((df.columns - 1) * sizeof(double));
+    printf("1\n");
+    for(int i = 0; i < df.rows; i++)
+    {
+        for(int j = 0; j < df.columns - 1; j++)
+            features[i][j] = df.raw_data[i][j];
     }
-
+    printf("1\n");
+    
     return features;
 }
 
-Data y(Data data)
+double* y(Data df)
 {
-    Data labels;
-    labels.rows = data.rows;
-    labels.columns = 1; // Only one column for labels
-
-    // Allocate memory for labels
-    labels.raw_data = (double**)malloc(labels.rows * sizeof(double*));
-    for (int i = 0; i < labels.rows; i++) 
-    {
-        labels.raw_data[i] = (double*)malloc(labels.columns * sizeof(double));
-        // Copy the last column from raw_data to labels
-        labels.raw_data[i][0] = data.raw_data[i][data.columns - 1];
-    }
-
+    
+    double* labels = (double*)malloc(df.rows * sizeof(double));
+    printf("1\n");
+    for(int i = 0; i < df.rows; i++)
+        labels[i] = df.raw_data[i][df.columns - 1];
+    printf("1\n");
     return labels;
+}
+
+Samples X_y(Data df)
+{
+    Samples dataframe;
+    printf("1\n");
+    dataframe.num_samples = df.rows;
+    dataframe.num_features = df.columns - 1;
+
+    printf("1\n");
+    dataframe.features = X(df);
+    printf("1\n");
+    dataframe.labels = y(df);
+    
+    printf("1\n");
+    return dataframe;
 }
