@@ -11,5 +11,9 @@ typedef struct data
 
 Data get_data(char* file_name);
 
+Data X(Data data);
+Data y(Data data);
+Data* X_y(Data data);
+
 void head(Data data, int num);
 void printHorizontalLine(int width);
