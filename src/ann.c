@@ -17,9 +17,11 @@ Layer layer_builder(int input_dim, int output_dim, unsigned input_layer)
         layer.bias = 0.0; // No bias for non-input layers
 
     layer.weights = (double**)malloc(layer.output_dim * sizeof(double*));
-    for (int i = 0; i < layer.output_dim; i++) {
+    for (int i = 0; i < layer.output_dim; i++) 
+    {
         layer.weights[i] = (double*)malloc(layer.input_dim * sizeof(double));
-        for (int j = 0; j < layer.input_dim; j++) {
+        for (int j = 0; j < layer.input_dim; j++) 
+        {
             layer.weights[i][j] = ((double)rand() / RAND_MAX); // Random weight between -1 and 1
         }
     }

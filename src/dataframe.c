@@ -54,18 +54,18 @@ void head(Data data, int num) {
 // function to seperate features and labels
 Data* X_y(Data data)
 {
-    printf("data created\n");
+    // printf("data created\n");
     Data* result = (Data*)malloc(2 * sizeof(Data)); // Allocate memory for features and labels
 
     // Extract features
-    printf("extracting x\n");
+    // printf("extracting x\n");
     result[0] = X(data);
-    printf("extracted x\n");
+    // printf("extracted x\n");
 
     // Extract labels
-    printf("extracting y\n");
+    // printf("extracting y\n");
     result[1] = y(data);
-    printf("extracted y\n");
+    // printf("extracted y\n");
 
     return result;
 }
