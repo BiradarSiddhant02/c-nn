@@ -162,34 +162,6 @@ double** read_csv(char* file_name, int dims[])
     dims[1] = col;
 
     fclose(csv_file);
+    data += 1;
     return data;
 }
-
-int* data_size(char* file_name)
-{
-    FILE* csv_file = fopen(file_name, "r");
-
-    if(!csv_file) 
-    {
-        printf("Cannot open file\n");
-        return NULL;
-    }
-
-    char buffer[1024];
-    int row = 0;
-    int col = 0;
-
-    // Determine the number of rows and columns in the CSV
-    while(fgets(buffer, 1024, csv_file)) 
-    {
-        col = 0;
-        row++;
-        strtok(buffer, ","); 
-        while (strtok(NULL, ",") != NULL) col++;
-    }
-    
-    int* dimension = (int*)malloc(2 * sizeof(int));
-    dimension[0] = row; dimension[1] = col;
-    return dimension;
-}
-
