@@ -51,46 +51,15 @@ void head(Data data, int num) {
     }
 }
 
-double** X(Data df)
+Sample get_sample(double* row, int num_features)
 {
-    double** features = (double**)malloc(df.rows * sizeof(double*));
-    printf("1\n");
-    for(int i = 0; i < df.columns - 1; i++)
-        features[i] = (double*)malloc((df.columns - 1) * sizeof(double));
-    printf("1\n");
-    for(int i = 0; i < df.rows; i++)
-    {
-        for(int j = 0; j < df.columns - 1; j++)
-            features[i][j] = df.raw_data[i][j];
-    }
-    printf("1\n");
-    
-    return features;
-}
+    Sample sample;
+    sample.class = row[num_features];
+    sample.num_features = num_features;
 
-double* y(Data df)
-{
-    
-    double* labels = (double*)malloc(df.rows * sizeof(double));
-    printf("1\n");
-    for(int i = 0; i < df.rows; i++)
-        labels[i] = df.raw_data[i][df.columns - 1];
-    printf("1\n");
-    return labels;
-}
+    sample.features = (double*)malloc(num_features * sizeof(double));
+    for(int i = 0; i < num_features; i++)
+        sample.features[i] = row[i];
 
-Samples X_y(Data df)
-{
-    Samples dataframe;
-    printf("1\n");
-    dataframe.num_samples = df.rows;
-    dataframe.num_features = df.columns - 1;
-
-    printf("1\n");
-    dataframe.features = X(df);
-    printf("1\n");
-    dataframe.labels = y(df);
-    
-    printf("1\n");
-    return dataframe;
+    return sample;
 }

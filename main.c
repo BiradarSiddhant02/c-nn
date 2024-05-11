@@ -23,7 +23,9 @@ int main()
     Data data = get_data("../data/data.csv");
     head(data, 3);
 
-    // Samples frame = X_y(data);
+    // Sample sample = get_sample(data.raw_data[0], data.columns - 1);
+
+    double* outputs = run_epoch(ann, data);
 
     return 0;
 }
