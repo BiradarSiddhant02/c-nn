@@ -113,55 +113,118 @@ void dump_to_file(Net net, char* file_name)
     fclose(fp);
 }
 
+// double** read_csv(char* file_name, int dims[])
+// {
+//     FILE* csv_file = fopen(file_name, "r");
+
+//     if(csv_file == NULL) 
+//     {
+//         printf("Cannot open file\n");
+//         return NULL;
+//     }
+
+//     char buffer[4096];
+//     int row = 0;
+//     int col = 0;
+
+//     // Determine the number of rows and columns in the CSV
+//     while(fgets(buffer, 1024, csv_file)) 
+//     {
+//         col = 0;
+//         row++;
+//         strtok(buffer, ","); 
+//         while (strtok(NULL, ",") != NULL) col++;
+//     }
+
+//     // Reset file pointer to the beginning of the file
+//     fseek(csv_file, 0, SEEK_SET);
+
+//     // Allocate memory for the 2D array
+//     double** data = (double**)malloc(row * sizeof(double*));
+//     for (int i = 0; i < row; i++)
+//         data[i] = (double*)malloc(col * sizeof(double));
+
+//     // Read data from the CSV and store it in the 2D array
+//     row = 0;
+//     while(fgets(buffer, 1024, csv_file)) 
+//     {
+//         col = 0;
+//         char* value = strtok(buffer, ",");
+//         while (value != NULL) 
+//         {
+//             data[row][col++] = atof(value); // Convert string to double
+//             value = strtok(NULL, ",");
+//         }
+//         row++;
+//     }
+
+//     dims[0] = row;
+//     dims[1] = col;
+
+//     fclose(csv_file);
+//     return data;
+// }
+
 double** read_csv(char* file_name, int dims[])
 {
     FILE* csv_file = fopen(file_name, "r");
-
+    
     if(csv_file == NULL) 
     {
-        printf("Cannot open file\n");
+        printf("file not found\n");
         return NULL;
     }
 
-    char buffer[1024];
-    int row = 0;
-    int col = 0;
-
-    // Determine the number of rows and columns in the CSV
-    while(fgets(buffer, 1024, csv_file)) 
+    else
     {
-        col = 0;
-        row++;
-        strtok(buffer, ","); 
-        while (strtok(NULL, ",") != NULL) col++;
-    }
+        char buffer[1024];
 
-    // Reset file pointer to the beginning of the file
-    fseek(csv_file, 0, SEEK_SET);
+        int rows = 0;
+        int cols = 0;
 
-    // Allocate memory for the 2D array
-    double** data = (double**)malloc(row * sizeof(double*));
-    for (int i = 0; i < row; i++)
-        data[i] = (double*)malloc(col * sizeof(double));
-
-    // Read data from the CSV and store it in the 2D array
-    row = 0;
-    while(fgets(buffer, 1024, csv_file)) 
-    {
-        col = 0;
-        char* value = strtok(buffer, ",");
-        while (value != NULL) 
+        while(fgets(buffer, 1024, csv_file))
         {
-            data[row][col++] = atof(value); // Convert string to double
-            value = strtok(NULL, ",");
+            rows++;
+
+            if(rows == 1) {continue;}
+
+            char* value = strtok(buffer, ", ");
+            while(value)
+            { 
+                value = strtok(NULL, ",");
+                cols++;
+            }
         }
-        row++;
+        
+        rows -= 1; cols /= rows;
+        
+        dims[0] = rows;
+        dims[1] = cols;
+
+        double** data = malloc(rows * sizeof(double*));
+        for(int i = 0; i < rows; i++)
+            data[i] = malloc(cols * sizeof(double));
+
+        fseek(csv_file, 0, SEEK_SET);
+        rows = 0; 
+        cols = 0;
+        
+        while (fgets(buffer, 1024, csv_file)) 
+        {
+            ++rows;
+
+            if (rows == 1) { continue; }
+
+            char* value = strtok(buffer, ", ");
+            cols = 0; // Reset cols for each row
+            while (value) 
+            {
+                data[rows - 2][cols++] = atof(value); // Adjusted indexing
+                value = strtok(NULL, ",");
+            }
+        }
+        
+        fclose(csv_file);
+        return data;
     }
-
-    dims[0] = row;
-    dims[1] = col;
-
-    fclose(csv_file);
-    data += 1;
-    return data;
 }
