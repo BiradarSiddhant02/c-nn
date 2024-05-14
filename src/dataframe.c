@@ -51,15 +51,14 @@ void head(Data data, int num) {
     }
 }
 
-Sample get_sample(double* row, int num_features)
+Sample get_sample(double* row, int num)
 {
     Sample sample;
-    sample.class = row[num_features - 1];
-    sample.num_features = num_features;
+    sample._class = row[num];
+    sample.num_features = num - 1;
 
-    sample.features = malloc(num_features * sizeof(double));
-    for(int i = 0; i < num_features; i++)
-        sample.features[i] = row[i];
+    for(int i = 0; i < num; i++) printf("%.2f ", row[i]);
+    printf("\n");
 
     return sample;
 }
