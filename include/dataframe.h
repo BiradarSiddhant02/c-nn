@@ -15,13 +15,13 @@ typedef struct data
 typedef struct sample
 {
     double* features;
-    double class;
+    double _class;
 
     int num_features;
 }Sample;
 
 Data get_data(char* file_name);
-Sample get_sample(double* row, int num_features);
+Sample get_sample(double* row, int num);
 
 void head(Data data, int num);
 void printHorizontalLine(int width);

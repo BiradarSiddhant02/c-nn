@@ -43,19 +43,19 @@ double* forward_pass(Net net, double* input_vec)
     return current_out;
 }
 
-double* run_epoch(Net net, Data data)
+double** run_epoch(Net net, Data data)
 {
-    printf("1\n");
-    printf("%d\n", data.rows * sizeof(Sample));
-    Sample* samples = (Sample*)malloc(data.rows * sizeof(Sample));
+    Sample sample;
     int num_features = data.columns - 1;
 
-    double** outputs = (double*)malloc(data.rows * sizeof(double));
+    double** outputs = malloc(data.rows * sizeof(double*));
+    for(int i = 0; i < data.rows; i++)
+        outputs[i] = malloc(data.columns * sizeof(double));
 
     for(int i = 0; i < data.rows; i++)
     {
-        samples[i] = get_sample(data.raw_data[i], num_features);
-        outputs[i] = forward_pass(net, samples[i].features);
+        sample = get_sample(data.raw_data[i], num_features);
+        outputs[i] = forward_pass(net, sample.features);
     }
     
     return outputs;

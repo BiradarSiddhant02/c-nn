@@ -25,6 +25,8 @@ int main()
 
     Sample sample = get_sample(data.raw_data[0], data.columns - 1);
 
+    printf("%.2f\n", sample._class);
+
     // double* outputs = run_epoch(ann, data);
 
     return 0;
