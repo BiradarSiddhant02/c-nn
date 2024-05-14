@@ -42,13 +42,13 @@ def generate_dataset(n_samples, n_features, n_useful_features, n_classes):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate synthetic classification dataset and save as CSV file.')
     parser.add_argument('--s', type=int, default=1000, help='Number of samples in the dataset')
-    parser.add_argument('--f', type=int, default=5, help='Number of total features')
+    parser.add_argument('--f', type=int, default=7, help='Number of total features')
     parser.add_argument('--uf', type=int, default=3, help='Number of useful features')
     parser.add_argument('--c', type=int, default=2, help='Number of classes')
     parser.add_argument('--o', type=str, default='data.csv', help='Output CSV file path')
     args = parser.parse_args()
 
-    directory_path = "./data/"
+    directory_path = "../data/"
     create_directory(directory_path)
 
     dataset = generate_dataset(args.s, args.f, args.uf, args.c)
