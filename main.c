@@ -21,13 +21,11 @@ int main()
     int dims[2] = {0, 0};
 
     Data data = get_data("../data/data.csv");
-    head(data, 3);
+    // head(data, 3);
 
-    Sample sample = get_sample(data.raw_data[0], data.columns - 1);
+    double** outputs = run_epoch(ann, data);
 
-    // printf("%.2f\n", sample._class);
 
-    double* outputs = run_epoch(ann, data);
 
     return 0;
 }

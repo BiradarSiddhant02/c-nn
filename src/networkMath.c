@@ -3,77 +3,102 @@
 #include "ann.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
+#include <time.h>
 
 double relu(double x) { return (x > 0) ? x : 0; }
 
-double*** get_all_weights(Net net)
-{
-    double*** all_weights = (double***)malloc(net.num_layers * sizeof(double**));
-    
-    for (int i = 0; i < net.num_layers; i++) 
-    {
-        const Layer layer = net.layers[i];
-        all_weights[i] = layer.weights;
-    }
-
-    return all_weights;
-}
-
-double* forward_pass(Net net, double* input_vec) 
-{
-    double* current_out = input_vec;
-
-    // loop running through all the layers
-    for(int i = 0; i < net.num_layers; i++)
-    {
-        // pass the current output vector and the current weight matrix to the dot() function
-        int dimA = net.layers[i].input_dim;
-        int dimB[2] = {net.layers[i].output_dim, net.layers[i].input_dim}; // Corrected dimB
-
-        current_out = dot(current_out, net.layers[i].weights, dimA, dimB);
-
-        for (int j = 0; j < dimB[0]; j++) 
-        {
-            current_out[j] += net.layers[i].bias; // Add bias
-            current_out[j] = relu(current_out[j]); // Apply ReLU activation
-        }
-    }
-
-    return current_out;
-}
-
 double** run_epoch(Net net, Data data)
 {
-    Sample sample;
-    int num_features = data.columns - 1;
+    // shuffle data
 
-    double** outputs = malloc(data.rows * sizeof(double*));
-    for(int i = 0; i < data.rows; i++)
-        outputs[i] = malloc(data.columns * sizeof(double));
+        shuffle(data);
+        // printf("%d %d\n", data.rows, data.columns);
 
-    for(int i = 0; i < data.rows; i++)
-    {
-        sample = get_sample(data.raw_data[i], num_features);
-        outputs[i] = forward_pass(net, sample.features);
-    }
-    
-    return outputs;
+    // split data into train and validation
+
+        Data* train_val_set = split(data, .7);
+
+    // seperate features and labels
+
+        Sample* train_samples = samples(train_val_set[0]);
+        Sample* validation_samples = samples(train_val_set[1]);
+
+        // head(train_val_set[0], 3);
+        // head(train_val_set[1], 3);
+
+    // forward pass all training data
+
+        // forwardpass()
+
+    // calculate loss
+    // backpropagate loss
+
+        // backprop()
+
+    // track loss and performance
+    // validate
+
+        // validate()
+
+        return NULL;
 }
 
-double* dot(double* A, double** B, int dimA, int* dimB)
+void shuffle(Data data)
 {
-    double sum;
 
-    double* out_vec = (double*)malloc(dimB[0] * sizeof(double));
-    
-    for (int i = 0; i < dimB[0]; i++) {
-        sum = 0.0;
-        for (int j = 0; j < dimA; j++) {
-            sum += B[i][j] * A[j];
+    srand(time(NULL));
+    for (int i = data.rows - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        if (i != j) {
+            double *temp = data.raw_data[i];
+            data.raw_data[i] = data.raw_data[j];
+            data.raw_data[j] = temp;
         }
-        out_vec[i] = sum;
+    }
+}
+
+Data* split(Data data, double trainsize)
+{
+    if(trainsize > 1. - (1 / data.rows) | trainsize < (1 / data.rows))
+    {
+        fprintf(stderr, "Error: invalid split size\n");
+        exit(EXIT_FAILURE);
     }
 
-    return out_vec;
+    double size = round(trainsize * data.rows);
+    Data* train_val_set = malloc(2 * sizeof(Data));
+    // printf("%d %d\n", data.rows, data.rows - (int)size);
+
+    train_val_set[0].raw_data = malloc(size * sizeof(double*));
+    for(int i = 0; i < size; i++)
+    {
+        train_val_set[0].raw_data[i] = malloc(data.columns * sizeof(double));
+        memcpy(train_val_set[0].raw_data[i], data.raw_data[i], data.columns * sizeof(double));
+    }
+
+    train_val_set[0].rows = size;
+    train_val_set[0].columns = data.columns;
+
+    train_val_set[1].raw_data = malloc(data.rows - size * sizeof(double*));
+    for(int i = size; i < data.rows - size; i++)
+    {
+        train_val_set[1].raw_data[i] = malloc(data.columns * sizeof(double));
+        memcpy(train_val_set[1].raw_data[i], data.raw_data[i], data.columns * sizeof(double));
+    }
+
+    train_val_set[1].rows = data.rows - size;
+    train_val_set[1].columns = data.columns;
+
+    return train_val_set;
+}
+
+Sample* samples(Data data)
+{
+    Sample* samples = malloc(data.rows * sizeof(Sample));
+    for(int i = 0; i < data.rows; i++)
+        samples[i] = get_sample(data.raw_data[i], data.columns);
+
+    return samples;
 }

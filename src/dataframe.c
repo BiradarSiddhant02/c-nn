@@ -57,8 +57,5 @@ Sample get_sample(double* row, int num)
     sample._class = row[num];
     sample.num_features = num - 1;
 
-    for(int i = 0; i < num; i++) printf("%.2f ", row[i]);
-    printf("\n");
-
     return sample;
 }
