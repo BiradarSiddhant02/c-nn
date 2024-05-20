@@ -1,5 +1,5 @@
 #include "networkMath.h"
-#include "dataframe.h"
+#include "dataFrame.h"
 #include "ann.h"
 #include <stdio.h>
 #include <stdlib.h>

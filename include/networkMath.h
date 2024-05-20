@@ -1,7 +1,7 @@
 #ifndef NETWORKMATH_H
 #define NETWORKMATH_H
 
-#include "dataframe.h"
+#include "dataFrame.h"
 #include "ann.h"
 
 double relu(double x);
