@@ -5,6 +5,9 @@
 #include "ann.h"
 
 double relu(double x);
+double sigmoid(double x);
+double relu_derivative(double x);
+double sigmoid_derivative(double x);
 
 double** run_epoch(Net net, Data data);
 

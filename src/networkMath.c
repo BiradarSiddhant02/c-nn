@@ -8,6 +8,10 @@
 #include <time.h>
 
 double relu(double x) { return (x > 0) ? x : 0; }
+double sigmoid(double x) { return 1 / (1 + exp(-x)); }
+double relu_derivative(double x) { return (x > 0) ? 1 : 0; }
+double sigmoid_derivative(double x) { return sigmoid(x) * (1 - sigmoid(x)); }
+
 
 double** run_epoch(Net net, Data data)
 {
@@ -25,8 +29,8 @@ double** run_epoch(Net net, Data data)
         Sample* train_samples = samples(train_val_set[0]);
         Sample* validation_samples = samples(train_val_set[1]);
 
-        // head(train_val_set[0], 3);
-        // head(train_val_set[1], 3);
+        head(train_val_set[0], 3);
+        head(train_val_set[1], 3);
 
     // forward pass all training data
 
@@ -67,9 +71,9 @@ Data* split(Data data, double trainsize)
         exit(EXIT_FAILURE);
     }
 
-    double size = round(trainsize * data.rows);
+    int size = round(trainsize * data.rows);
     Data* train_val_set = malloc(2 * sizeof(Data));
-    // printf("%d %d\n", data.rows, data.rows - (int)size);
+    // printf("%d\n", size);
 
     train_val_set[0].raw_data = malloc(size * sizeof(double*));
     for(int i = 0; i < size; i++)
@@ -81,11 +85,11 @@ Data* split(Data data, double trainsize)
     train_val_set[0].rows = size;
     train_val_set[0].columns = data.columns;
 
-    train_val_set[1].raw_data = malloc(data.rows - size * sizeof(double*));
-    for(int i = size; i < data.rows - size; i++)
+    train_val_set[1].raw_data = malloc((data.rows - size) * sizeof(double*));
+    for(int i = 0; i < data.rows - size; i++)
     {
         train_val_set[1].raw_data[i] = malloc(data.columns * sizeof(double));
-        memcpy(train_val_set[1].raw_data[i], data.raw_data[i], data.columns * sizeof(double));
+        memcpy(train_val_set[1].raw_data[i], data.raw_data[i + size], data.columns * sizeof(double));
     }
 
     train_val_set[1].rows = data.rows - size;
@@ -96,9 +100,14 @@ Data* split(Data data, double trainsize)
 
 Sample* samples(Data data)
 {
-    Sample* samples = malloc(data.rows * sizeof(Sample));
+    Sample* sample = malloc(data.rows * sizeof(Sample));
+    
+    // printf("%d\n", data.rows);
     for(int i = 0; i < data.rows; i++)
-        samples[i] = get_sample(data.raw_data[i], data.columns);
+    {
+        // printf("i=%d\n", i);
+        sample[i] = get_sample(data.raw_data[i], data.columns);
+    }
 
-    return samples;
+    return sample;
 }
