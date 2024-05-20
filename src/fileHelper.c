@@ -3,9 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "filehelper.h"
+#include "fileHelper.h"
 #include "ann.h"
-#include "dataframe.h"
+#include "dataFrame.h"
 
 WeightField create_field(Layer layer, int layer_num)
 {
