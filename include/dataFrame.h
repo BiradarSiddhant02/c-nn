@@ -1,5 +1,5 @@
-#ifndef DATAFRAME_H
-#define DATAFRAME_H
+#ifndef dataFrame_H
+#define dataFrame_H
 
 #include <stdio.h>
 #include <stdlib.h>

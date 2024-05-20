@@ -1,7 +1,7 @@
 #include "ann.h"
 #include "networkMath.h"
-#include "filehelper.h"
-#include "dataframe.h"
+#include "fileHelper.h"
+#include "dataFrame.h"
 
 #include <stdio.h>
 #include <stdlib.h>
