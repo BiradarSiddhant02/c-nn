@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 project(neural_network C)
 
 
@@ -19,4 +19,3 @@ add_executable(neural_network main.c ${SOURCES})
 target_link_libraries(neural_network m)
 
 set_target_properties(neural_network PROPERTIES C_STANDARD 99)
-
