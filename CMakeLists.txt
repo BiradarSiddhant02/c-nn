@@ -18,4 +18,4 @@ endforeach()
 add_executable(neural_network main.c ${SOURCES})
 target_link_libraries(neural_network m)
 
-set_target_properties(neural_network PROPERTIES C_STANDARD 99)
+set_target_properties(neural_network PROPERTIES C_STANDARD 23)
