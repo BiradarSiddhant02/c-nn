@@ -13,8 +13,18 @@ Data get_data(char* file_name)
     int dims[2] = {0, 0};
 
     csv_data.raw_data = read_csv(file_name, dims);
+    if (csv_data.raw_data == NULL) {
+        fprintf(stderr, "Error: Failed to read CSV file: %s\n", file_name);
+        exit(EXIT_FAILURE);
+    }
+
     csv_data.rows = dims[0];
     csv_data.columns = dims[1];
+
+    if (csv_data.rows == 0 || csv_data.columns == 0) {
+        fprintf(stderr, "Error: Invalid dimensions for CSV data\n");
+        exit(EXIT_FAILURE);
+    }
 
     return csv_data;
 }
@@ -28,6 +38,13 @@ void printHorizontalLine(int width) {
 
 void head(Data data, int num) {
     // Print the header line
+
+    if (num > data.rows) 
+    {
+        fprintf(stderr, "Error: Number of rows to print exceeds total rows in data\n");
+        exit(EXIT_FAILURE);
+    }
+
     printHorizontalLine(data.columns * 10 + 1);
     printf("|");
     for (int j = 0; j < data.columns - 1; j++) {
@@ -53,6 +70,13 @@ void head(Data data, int num) {
 
 Sample get_sample(double* row, int num)
 {
+    
+    if(num < 1)
+    {
+        fprintf(stderr, "Error: invalid value of argument 'num'\n");
+        exit(EXIT_FAILURE);
+    }
+
     Sample sample;
     sample._class = row[num];
     sample.num_features = num - 1;
