@@ -20,14 +20,15 @@ int main()
 
     int dims[2] = {0, 0};
 
-    dump_to_file(ann, "/home/sidd/Documents/c-nn/output/ann.txt");
+    // dump_to_file(ann, "/home/sidd/Documents/c-nn/output/ann.txt");
 
     Data data = get_data("../data/data.csv");
     // head(data, 3);
 
     double** outputs = run_epoch(ann, data);
 
-
+    Sample s = get_sample(data.raw_data[3], data.columns);
+    printf("%d\n", s.num_features);
 
     return 0;
 }

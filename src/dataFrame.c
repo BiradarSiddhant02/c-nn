@@ -78,7 +78,7 @@ Sample get_sample(double* row, int num)
     }
 
     Sample sample;
-    sample._class = row[num];
+    sample._class = row[num - 1];
     sample.num_features = num - 1;
 
     return sample;
