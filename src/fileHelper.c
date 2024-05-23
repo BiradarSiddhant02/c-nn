@@ -10,18 +10,54 @@
 WeightField create_field(Layer layer, int layer_num)
 {
     WeightField field;
+
+    if (layer.input_dim <= 0 || layer.output_dim <= 0) 
+    {
+        fprintf(stderr, "Error: Invalid dimensions in layer for creating field\n");
+        exit(EXIT_FAILURE);
+    }
+
     field.layer_num = layer_num;
     field.rows = layer.input_dim;
     field.columns = layer.output_dim;
 
     field.weights = (double**)malloc(field.rows * sizeof(double*));
-    for(int i = 0; i < field.rows; i++)
+    if (field.weights == NULL) 
+    {
+        fprintf(stderr, "Error: Memory allocation failed for weights in create_field\n");
+        exit(EXIT_FAILURE);
+    }
+    for(int i = 0; i < field.rows; i++) 
+    {
         field.weights[i] = (double*)malloc(field.columns * sizeof(double));
+        if (field.weights[i] == NULL) 
+        {
+            for (int j = 0; j < i; j++) 
+                free(field.weights[j]);
+        
+            free(field.weights);
+            fprintf(stderr, "Error: Memory allocation failed for weights[%d] in create_field\n", i);
+            exit(EXIT_FAILURE);
+        }
+    }
 
-    field.weights = layer.weights;
+    // Copy weights from the layer
+    for(int i = 0; i < field.rows; i++)
+        memcpy(field.weights[i], layer.weights[i], field.columns * sizeof(double));
 
+    // Allocate memory for biases
     field.biases = (double*)malloc(field.rows * sizeof(double));
+    if (field.biases == NULL) 
+    {
+        // Clean up previously allocated memory
+        for (int i = 0; i < field.rows; i++)
+            free(field.weights[i]);
+        free(field.weights);
+        fprintf(stderr, "Error: Memory allocation failed for biases in create_field\n");
+        exit(EXIT_FAILURE);
+    }
 
+    // Set biases
     for(int i = 0; i < field.rows; i++)
         field.biases[i] = layer.bias;
 
@@ -112,58 +148,6 @@ void dump_to_file(Net net, char* file_name)
     // Close the file
     fclose(fp);
 }
-
-// double** read_csv(char* file_name, int dims[])
-// {
-//     FILE* csv_file = fopen(file_name, "r");
-
-//     if(csv_file == NULL) 
-//     {
-//         printf("Cannot open file\n");
-//         return NULL;
-//     }
-
-//     char buffer[4096];
-//     int row = 0;
-//     int col = 0;
-
-//     // Determine the number of rows and columns in the CSV
-//     while(fgets(buffer, 1024, csv_file)) 
-//     {
-//         col = 0;
-//         row++;
-//         strtok(buffer, ","); 
-//         while (strtok(NULL, ",") != NULL) col++;
-//     }
-
-//     // Reset file pointer to the beginning of the file
-//     fseek(csv_file, 0, SEEK_SET);
-
-//     // Allocate memory for the 2D array
-//     double** data = (double**)malloc(row * sizeof(double*));
-//     for (int i = 0; i < row; i++)
-//         data[i] = (double*)malloc(col * sizeof(double));
-
-//     // Read data from the CSV and store it in the 2D array
-//     row = 0;
-//     while(fgets(buffer, 1024, csv_file)) 
-//     {
-//         col = 0;
-//         char* value = strtok(buffer, ",");
-//         while (value != NULL) 
-//         {
-//             data[row][col++] = atof(value); // Convert string to double
-//             value = strtok(NULL, ",");
-//         }
-//         row++;
-//     }
-
-//     dims[0] = row;
-//     dims[1] = col;
-
-//     fclose(csv_file);
-//     return data;
-// }
 
 double** read_csv(char* file_name, int dims[])
 {

@@ -20,6 +20,8 @@ int main()
 
     int dims[2] = {0, 0};
 
+    dump_to_file(ann, "/home/sidd/Documents/c-nn/output/ann.txt");
+
     Data data = get_data("../data/data.csv");
     // head(data, 3);
 
