@@ -51,11 +51,17 @@ double** run_epoch(Net net, Data data)
 
 void shuffle(Data data)
 {
+    // Check if data is not empty and has at least two rows
+    if (data.raw_data == NULL || data.rows < 2) {
+        fprintf(stderr, "Error: Cannot shuffle empty or insufficient data\n");
+        exit(EXIT_FAILURE);
+    }
 
     srand(time(NULL));
     for (int i = data.rows - 1; i > 0; i--) {
         int j = rand() % (i + 1);
         if (i != j) {
+            // Swap rows
             double *temp = data.raw_data[i];
             data.raw_data[i] = data.raw_data[j];
             data.raw_data[j] = temp;
@@ -63,32 +69,90 @@ void shuffle(Data data)
     }
 }
 
+
 Data* split(Data data, double trainsize)
 {
-    if(trainsize > 1. - (1 / data.rows) | trainsize < (1 / data.rows))
+    if (trainsize <= 0 || trainsize >= 1 || trainsize > (1.0 - (1.0 / data.rows)) || trainsize < (1.0 / data.rows))
     {
         fprintf(stderr, "Error: invalid split size\n");
         exit(EXIT_FAILURE);
     }
 
-    int size = round(trainsize * data.rows);
-    Data* train_val_set = malloc(2 * sizeof(Data));
-    // printf("%d\n", size);
+    // Check if data is not empty
+    if (data.raw_data == NULL || data.rows == 0 || data.columns == 0) 
+    {
+        fprintf(stderr, "Error: Cannot split empty data\n");
+        exit(EXIT_FAILURE);
+    }
 
+    int size = round(trainsize * data.rows);
+
+    // Allocate memory for train_val_set
+    Data* train_val_set = malloc(2 * sizeof(Data));
+    if (train_val_set == NULL) 
+    {
+        fprintf(stderr, "Error: Memory allocation failed for train_val_set in split\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // Allocate memory for training set
     train_val_set[0].raw_data = malloc(size * sizeof(double*));
+    if (train_val_set[0].raw_data == NULL) 
+    {
+        free(train_val_set); // Clean up memory
+        fprintf(stderr, "Error: Memory allocation failed for training set in split\n");
+        exit(EXIT_FAILURE);
+    }
     for(int i = 0; i < size; i++)
     {
         train_val_set[0].raw_data[i] = malloc(data.columns * sizeof(double));
+        if (train_val_set[0].raw_data[i] == NULL) 
+        {
+            // Clean up previously allocated memory
+            for (int j = 0; j < i; j++) 
+                free(train_val_set[0].raw_data[j]);
+            
+            free(train_val_set[0].raw_data);
+            free(train_val_set);
+            fprintf(stderr, "Error: Memory allocation failed for training set row %d in split\n", i);
+            exit(EXIT_FAILURE);
+        }
         memcpy(train_val_set[0].raw_data[i], data.raw_data[i], data.columns * sizeof(double));
     }
 
     train_val_set[0].rows = size;
     train_val_set[0].columns = data.columns;
 
+    // Allocate memory for validation set
     train_val_set[1].raw_data = malloc((data.rows - size) * sizeof(double*));
+    if (train_val_set[1].raw_data == NULL) 
+    {
+        // Clean up memory
+        for (int i = 0; i < size; i++) 
+            free(train_val_set[0].raw_data[i]);
+        
+        free(train_val_set[0].raw_data);
+        free(train_val_set);
+        fprintf(stderr, "Error: Memory allocation failed for validation set in split\n");
+        exit(EXIT_FAILURE);
+    }
     for(int i = 0; i < data.rows - size; i++)
     {
         train_val_set[1].raw_data[i] = malloc(data.columns * sizeof(double));
+        if (train_val_set[1].raw_data[i] == NULL) 
+        {
+            for (int j = 0; j < i; j++) 
+                free(train_val_set[1].raw_data[j]);
+            
+            free(train_val_set[1].raw_data);
+            for (int j = 0; j < size; j++) 
+                free(train_val_set[0].raw_data[j]);
+            
+            free(train_val_set[0].raw_data);
+            free(train_val_set);
+            fprintf(stderr, "Error: Memory allocation failed for validation set row %d in split\n", i);
+            exit(EXIT_FAILURE);
+        }
         memcpy(train_val_set[1].raw_data[i], data.raw_data[i + size], data.columns * sizeof(double));
     }
 
@@ -98,16 +162,23 @@ Data* split(Data data, double trainsize)
     return train_val_set;
 }
 
+
 Sample* samples(Data data)
 {
-    Sample* sample = malloc(data.rows * sizeof(Sample));
-    
-    // printf("%d\n", data.rows);
-    for(int i = 0; i < data.rows; i++)
-    {
-        // printf("i=%d\n", i);
-        sample[i] = get_sample(data.raw_data[i], data.columns);
+    // Check if data is not empty
+    if (data.raw_data == NULL || data.rows == 0 || data.columns == 0) {
+        fprintf(stderr, "Error: Cannot create samples from empty data\n");
+        exit(EXIT_FAILURE);
     }
+
+    Sample* sample = malloc(data.rows * sizeof(Sample));
+    if (sample == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed for samples in samples\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    for(int i = 0; i < data.rows; i++)
+        sample[i] = get_sample(data.raw_data[i], data.columns);
 
     return sample;
 }
