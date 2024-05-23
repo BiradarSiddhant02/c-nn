@@ -10,8 +10,8 @@
 
 int main() 
 {
-    int input_dim = 2;
-    int hidden_dim[] = {2, 2};
+    int input_dim = 7;
+    int hidden_dim[] = {8, 8};
     int classes = 2;
 
     int num_layers = sizeof(hidden_dim) / sizeof(hidden_dim[0]) + 1;

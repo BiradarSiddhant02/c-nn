@@ -33,7 +33,7 @@ double** run_epoch(Net net, Data data)
         head(train_val_set[1], 3);
 
     // forward pass all training data
-
+        
         // forwardpass()
 
     // calculate loss
@@ -68,7 +68,6 @@ void shuffle(Data data)
         }
     }
 }
-
 
 Data* split(Data data, double trainsize)
 {
@@ -162,7 +161,6 @@ Data* split(Data data, double trainsize)
     return train_val_set;
 }
 
-
 Sample* samples(Data data)
 {
     // Check if data is not empty
@@ -181,4 +179,60 @@ Sample* samples(Data data)
         sample[i] = get_sample(data.raw_data[i], data.columns);
 
     return sample;
+}
+
+double** forward_pass(Net net, Sample* samples, int num_samples)
+{
+    double** outputs = (double**)malloc(num_samples * sizeof(double*));
+
+    for(int sample = 0; sample < num_samples; sample++)
+    {
+        double* X = samples[sample].features;
+        double* input = X;
+        
+        for(int layer = 0; layer < net.num_layers; layer++)
+        {
+            Layer current_layer = net.layers[layer];
+            int dimY = current_layer.output_dim;
+
+            // Allocate memory for output of this layer
+            double* Y = (double*)malloc(dimY * sizeof(double));
+
+            // Calculate output of this layer (assuming dot() is a function for matrix multiplication)
+            Y = dot(input, current_layer.weights, current_layer.input_dim, dimY);
+            
+            for (int i = 0; i < dimY; i++)
+                Y[i] += current_layer.bias;
+
+            // Apply activation function
+            for (int i = 0; i < dimY; i++) {
+                Y[i] = relu(Y[i]); // Apply ReLU activation
+                // Y[i] = sigmoid(Y[i]); // Alternatively, apply sigmoid activation
+            }
+
+            // Free memory of input for next layer
+            free(input);
+
+            // Update input for next layer
+            input = Y;
+        }
+
+        // Store output of the last layer
+        outputs[sample] = input;
+    }
+
+    return outputs;
+}
+
+
+double* dot(double* A, double** B, int dim_in, int dim_out)
+{
+    double* result = (double*)malloc(sizeof(double) * dim_out);
+    for (int i = 0; i < dim_out; i++) 
+    {
+        result[i] = 0.0;
+        for (int j = 0; j < dim_in; j++) 
+            result[i] += A[j] * B[j][i];
+    }
+    return result;
 }
